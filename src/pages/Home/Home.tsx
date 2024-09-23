@@ -3,10 +3,12 @@ import { Breadcrumb, Layout, theme, Button, Modal, Form, Input, Row, Col } from 
 import { useTheme } from '../../context/ThemeContext';
 import PostList from './PostList';
 import axiosInstance from '../../common/axios';
+import ColorPicker from 'react-pick-color';
 
 const { Header, Content, Footer } = Layout;
 
 const Home: React.FC = () => {
+  const [color, setColor] = useState('#fff');
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -17,7 +19,7 @@ const Home: React.FC = () => {
 
   const createPost = async (values: any) => {
     try {
-      await axiosInstance.post('/post', values);
+      await axiosInstance.post('/post', { ...values, color });
       // Optionally, you can trigger a refetch of posts here
       // fetchPosts();
       setIsModalVisible(false); // Close the modal
@@ -101,7 +103,7 @@ const Home: React.FC = () => {
             name="color"
             rules={[{ required: true, message: 'Please input the color!' }]}
           >
-            <Input />
+            <ColorPicker color={color} onChange={color => setColor(color.hex)} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
