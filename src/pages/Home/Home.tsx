@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumb, Layout, theme, Button, Modal, Form, Input, Row, Col } from 'antd';
 import { useTheme } from '../../context/ThemeContext';
 import PostList from './PostList';
 import axiosInstance from '../../common/axios';
 import ColorPicker from 'react-pick-color';
+import { IPost } from '../../models/IPost';
 
 const { Header, Content, Footer } = Layout;
 
 const Home: React.FC = () => {
+  const [posts, setPosts] = React.useState<IPost[]>([]);
   const [color, setColor] = useState('#fff');
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -24,10 +26,24 @@ const Home: React.FC = () => {
       // fetchPosts();
       setIsModalVisible(false); // Close the modal
       form.resetFields(); // Reset the form fields
+      await fetchPosts();
     } catch (error) {
       console.error('Failed to create post:', error);
     }
   };
+  const fetchPosts = async () => {
+    try {
+      const response = await axiosInstance.get('/post');
+      console.log(response.data);
+      setPosts(response.data);
+    } catch (error) {
+
+    }
+  }
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   return (
     <Layout>
@@ -68,7 +84,7 @@ const Home: React.FC = () => {
             </Button>
           </Col>
           <Col span={24} style={{ marginTop: '16px' }}>
-            <PostList />
+            <PostList posts={posts} />
           </Col>
         </Row>
       </Content>

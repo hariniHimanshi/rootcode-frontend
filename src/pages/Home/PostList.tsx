@@ -1,32 +1,21 @@
-import React, { useEffect } from 'react';
+import { Row,Col } from 'antd';
 import { IPost } from '../../models/IPost';
-import axiosInstance from '../../common/axios';
 import Post from './Post';
 
+interface IPostListProps {
+  posts: IPost[];
+}
 
-const PostList: React.FC = () => {
-  const [posts, setPosts] = React.useState<IPost[]>([]);
-
-  const fetchPosts = async () => {
-    try {
-      const response = await axiosInstance.get('/post');
-      console.log(response.data);
-      setPosts(response.data);
-    } catch (error) {
-
-    }
-  }
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+const PostList: React.FC <IPostListProps> = (posts) => {
 
   return (
-  <>
-    {posts.map((post) => (
-      <Post key={post.id} {...post} />
-    ))}
-  </>
+    <Row gutter={16} justify="center">
+      {posts.posts.map((post) => (
+        <Col key={post.id} span={8} style={{ marginBottom: '16px' }}>
+          <Post {...post} />
+        </Col>
+      ))}
+    </Row>
 );
 }
 

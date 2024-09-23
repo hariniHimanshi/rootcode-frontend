@@ -38,7 +38,7 @@ const Post: React.FC<IPost> = (post) => {
   return (
     <>
       <Card
-        style={{ width: 300 }}
+        style={{ width: 300 , margin: 20 }}
         actions={[<EditOutlined key="edit" onClick={showModal} />]}
       >
         <Meta
@@ -62,7 +62,7 @@ const Post: React.FC<IPost> = (post) => {
         <Divider />
         <h3>Comments</h3>
         {post?.comments.map((comment) => (
-          <Card key={comment.id} style={{ width: 300 }}>
+          <Card key={comment.id} style={{ width: 300 , margin: 20}}>
             <p>{comment.description}</p>
           </Card>
         ))}
