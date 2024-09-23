@@ -7,13 +7,13 @@ const { Meta } = Card;
 
 const Post: React.FC<IPost> = (post) => (
   <Card
-    style={{ width: 300, color: post.color }}
+    style={{ width: 300 }}
     actions={[
       <EditOutlined key="edit" />,
     ]}
   >
     <Meta
-      title={post.title}
+      title={<span style={{ color: post.color }}>{post.title}</span>} // Set title color
       description={post.description}
     />
   </Card>
