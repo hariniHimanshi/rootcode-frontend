@@ -1,6 +1,8 @@
-import React from 'react';
-import { Breadcrumb, Layout, theme, Button } from 'antd';
+import React, { useState } from 'react';
+import { Breadcrumb, Layout, theme, Button, Modal, Form, Input, Row, Col } from 'antd';
 import { useTheme } from '../../context/ThemeContext';
+import PostList from './PostList';
+import axiosInstance from '../../common/axios';
 
 const { Header, Content, Footer } = Layout;
 
@@ -10,9 +12,20 @@ const Home: React.FC = () => {
   } = theme.useToken();
   const { bg_theme, bg_toggleTheme } = useTheme();
 
-  const createPost = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
-  }
+  const createPost = async (values: any) => {
+    try {
+      await axiosInstance.post('/post', values);
+      // Optionally, you can trigger a refetch of posts here
+      // fetchPosts();
+      setIsModalVisible(false); // Close the modal
+      form.resetFields(); // Reset the form fields
+    } catch (error) {
+      console.error('Failed to create post:', error);
+    }
+  };
 
   return (
     <Layout>
@@ -35,7 +48,9 @@ const Home: React.FC = () => {
         <Breadcrumb style={{ margin: '16px 0' }}>
           <Breadcrumb.Item>Home</Breadcrumb.Item>
         </Breadcrumb>
-        <div
+        <Row
+          justify="center"
+          align="middle"
           style={{
             padding: 24,
             minHeight: '80vh',
@@ -43,17 +58,58 @@ const Home: React.FC = () => {
             borderRadius: borderRadiusLG,
             backgroundColor: bg_theme === 'light' ? '#fff' : '#333',
             color: bg_theme === 'light' ? '#000' : '#fff',
-            display: 'flex', justifyContent: 'center', alignItems: 'center'
           }}
         >
-          <Button type="primary" onClick={createPost}>
-            Create new post
-          </Button>
-        </div>
+          <Col>
+            <Button type="primary" onClick={() => setIsModalVisible(true)}>
+              Create new post
+            </Button>
+          </Col>
+          <Col span={24} style={{ marginTop: '16px' }}>
+            <PostList />
+          </Col>
+        </Row>
       </Content>
       <Footer style={{ textAlign: 'center' }}>
         RootCode ©{new Date().getFullYear()} Created by Harini Himanshi
       </Footer>
+
+      {/* Modal for creating a post */}
+      <Modal
+        title="Create New Post"
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
+        <Form form={form} onFinish={createPost}>
+          <Form.Item
+            label="Title"
+            name="title"
+            rules={[{ required: true, message: 'Please input the title!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: 'Please input the description!' }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            label="Color"
+            name="color"
+            rules={[{ required: true, message: 'Please input the color!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Create Post
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </Layout>
   );
 };
