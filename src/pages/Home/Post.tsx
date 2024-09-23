@@ -24,6 +24,7 @@ const Post: React.FC<IPost> = (post) => {
 
   const createComment = async (values: any) => {
     try {
+      console.log('values:', values);
       await axiosInstance.post('/post/comment', { ...values, postId: post.id });
       // Optionally, you can trigger a refetch of posts here
       // fetchPosts();
@@ -69,7 +70,7 @@ const Post: React.FC<IPost> = (post) => {
         <Form form={form} onFinish={createComment}>
           <Form.Item
             label="Comment"
-            name="title"
+            name="description"
             rules={[{ required: true, message: 'Please input the comment!' }]}
           >
             <Input.TextArea />
