@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { EditOutlined } from '@ant-design/icons';
-import { Card, Modal, Form, Input, Divider } from 'antd';
+import { Card, Modal, Form, Input, Divider, Button } from 'antd';
 import { IPost } from '../../models/IPost';
 import axiosInstance from '../../common/axios';
 
@@ -24,13 +24,13 @@ const Post: React.FC<IPost> = (post) => {
 
   const createComment = async (values: any) => {
     try {
-      await axiosInstance.post('/post/comment', {...values,postId:post.id});
+      await axiosInstance.post('/post/comment', { ...values, postId: post.id });
       // Optionally, you can trigger a refetch of posts here
       // fetchPosts();
       setIsModalVisible(false); // Close the modal
       form.resetFields(); // Reset the form fields
     } catch (error) {
-      console.error('Failed to create post:', error);
+      console.error('Failed to create comment:', error);
     }
   };
 
@@ -38,9 +38,7 @@ const Post: React.FC<IPost> = (post) => {
     <>
       <Card
         style={{ width: 300 }}
-        actions={[
-          <EditOutlined key="edit" onClick={showModal} />,
-        ]}
+        actions={[<EditOutlined key="edit" onClick={showModal} />]}
       >
         <Meta
           title={<span style={{ color: post.color }}>{post.title}</span>}
@@ -58,7 +56,7 @@ const Post: React.FC<IPost> = (post) => {
           <Meta
             title={<span style={{ color: post.color }}>{post.title}</span>}
             description={post.description}
-          /> 
+          />
         </Card>
         <Divider />
         <h3>Comments</h3>
@@ -69,14 +67,17 @@ const Post: React.FC<IPost> = (post) => {
         ))}
         <Divider />
         <Form form={form} onFinish={createComment}>
-        <Form.Item
-          label="Title"
-          name="title"
-          rules={[{ required: true, message: 'Please input the title!' }]}
-        >
-        <Input.TextArea />
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="Comment"
+            name="title"
+            rules={[{ required: true, message: 'Please input the comment!' }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">Submit Comment</Button>
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   );
